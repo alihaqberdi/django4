@@ -14,7 +14,7 @@ def IndexView(request):
 # urls.py  
 from django.urls import path
 from views import *
-url = [
+urlpatterns = [
   path('index/', IndexView, name='index')
 ]
 # end urls.py 
