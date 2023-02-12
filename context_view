@@ -1,0 +1,72 @@
+# html fayllarga funksiya yordamida malumotlar jo'natish.  context
+# Send data to html files using a function. context
+# Отправляем данные в html-файлы с помощью функции. context
+
+# view.py
+
+from django.shortcuts import render
+
+# ! context dict ma'lumot turida bo'ladi
+# ! context dict имеет тип данных
+# ! context dict is of data type
+
+def ContextView1(request):
+  return render(request, 'index.html', {'message': 'this message came from view'})
+
+def ContextView2(request):
+  return render(request, 'index.html', {'message': 'bu xabar viewdan keldi'})
+  
+def ContextView3(request):
+  return render(request, 'index.html', {'message': 'это сообщение пришло из view'})
+  
+# end view.py
+  
+  
+# urls.py  
+from django.urls import path
+from views import *
+urlpatterns = [
+  path('context1/', ContextView1, name='context1'),
+  path('context2/', ContextView2, name='context2'),
+  path('context3/', ContextView3, name='context3')
+]
+# end urls.py 
+  
+
+# eslatma html fayllarda django o'zgaruvchilarni mana bundey -> {{ }} qavslar ichida yoziladi
+# обратите внимание, что переменные django в html-файлах записываются так -> {{ }} в скобках
+# note django variables in html files are written like this -> {{ }} in brackets
+  
+#index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>context</title>
+</head>
+<body>
+    <h1>your template view</h1>
+    <p> {{ message }} </p>
+</body>
+</html>
+# end index.html
+
+# natija
+# результат
+# the result
+http://127.0.0.1:8000/context1/
+your template view
+this message came from view
+
+http://127.0.0.1:8000/context2/
+your template view
+bu xabar viewdan keldi
+
+http://127.0.0.1:8000/context3/
+your template view
+это сообщение пришло из view
+
+
+# 3 xil funcsiya yaratdik va 3 ta pathga yozdik html fayldan funksiya yuborgan o'zgaruvchi(dict malumot turini) ishlatdik 
+# We created 3 different functions and wrote them in 3 paths, we used the variable sent by the function from the html file (dict reference type)
+# Мы создали 3 разные функции и записали их в 3 пути, мы использовали переменную, отправленную функцией из html файла (тип ссылки dict)
