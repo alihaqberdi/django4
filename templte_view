@@ -1,0 +1,40 @@
+# html fayllarni funksiya yordamida ochish
+# open html files using the function
+# открываем html файлы с помощью функции
+
+# view.py
+from django.shortcuts import render
+
+
+def IndexView(request):
+  return render(request, 'index.html')
+# end view.py
+  
+  
+# urls.py  
+from django.urls import path
+from views import *
+url = [
+  path('index/', IndexView, name='index')
+]
+# end urls.py 
+  
+  
+#index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>your template view</h1>
+</body>
+</html>
+# end index.html
+
+# natija
+# результат
+# the result
+
+your template view
