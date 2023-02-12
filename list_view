@@ -1,0 +1,116 @@
+# productlar ro'yxatini html falyga uzatish
+# pass the list of products to the html file
+# передать список товаров в html файл
+
+# model.py
+
+from django.db import models
+
+
+class Category(model.Model):
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.name
+
+# end model.py
+
+#def __str__  object nomi obyekt nomi bilan chiqishi uchun 
+#def __str__ чтобы имя объекта выводилось как имя объекта
+#def __str__ so that the object name is output as the object name
+
+
+# terminal
+python manage.py makemigrations
+python manage.py migrate
+
+python manage.py shell
+>>>from yourapp.models import Category
+>>>obj = Category.object.create(name='Python', slug='py')
+>>>obj.save()
+>>>obj2 = Category.object.create(name='JavaScript', slug='javascript')
+>>>obj2.save()
+>>>obj3 = Category.object.create(name='Dart', slug='dart')
+>>>obj3.save()
+>>>exit()
+
+# end terminal
+
+
+# biz yozgan modelimizni jadvallarni yaratish uchum makemigrations va migrate commandalarni yozdik va manage shell bilan modelimizga product qo'shdik
+# we wrote makemigrations and migrate commands to create tables for our model and add product to our model with manage shell
+# мы написали команды makemigration и migrate для создания таблиц для нашей модели и добавления продукта в нашу модель с помощью командной оболочки
+
+
+# view.py
+
+from django.shortcuts import render
+from .models import Category
+
+# ! modelimizni chaqirib barcha yaratilgan productlarni index html faylga yuboramiz
+# ! вызываем нашу модель и отправляем все созданные товары в индексный html файл
+# ! call our model and send all created products to the index html file
+
+def ContextView1(request):
+  obj = Category.objects.all()
+  print(obj)# <QuerySet [<Category: Python>, <Category: JavaScript>, <Category: Dart]>
+  context = {
+    'list': obj
+  }
+  return render(request, 'index.html', context)
+  
+# end view.py
+
+
+# all()
+# modelimizdagi obyeklarni olish uchun modelnomi.object.va_metod yani Category.objects.all().  all() barcha obyektlarni qaytaradi
+# to get objects in our model modelname.object.va_method i.e. Category.objects.all(). all() returns all objects
+# чтобы получить объекты в нашей модели modelname.object.va_method i.e. Category.objects.all(). all() возвращает все объекты
+
+  
+# urls.py  
+from django.urls import path
+from views import *
+urlpatterns = [
+  path('context1/', ContextView1, name='context1'),
+]
+# end urls.py 
+  
+
+# ! html faylda for sikldan foydalanib queryset malumotlarini olamiz.  foo sikl sintaksisi quyidagicha  {% for i in context_name %} <p> {{ i }} </p> {% endfor %}
+# ! In the html file, we get the queryset data using a for loop. foo loop syntax is {% for i in context_name %} <p> {{ i }} </p> {% endfor %}
+# ! В html-файле мы получаем данные набора запросов с помощью цикла for. Синтаксис цикла foo: {% for i in context_name %} <p> {{ i }} </p> {% endfor %}
+
+#index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>context</title>
+</head>
+<body>
+    {% for categor in list %}
+      <p>category object name = {{ categor.name }} </p>
+      <p>category object slug = {{ categor.slug }} </p>
+    {% endfor %}
+</body>
+</html>
+# end index.html
+
+# natija
+# результат
+# the result
+
+http://127.0.0.1:8000/context1/
+category object name = Python
+category object slug = py
+category object name = JavaScript
+category object slug = javascript
+category object name = Dart
+category object slug = dart
+
+
+# We can get the properties of our object in the for loop with dot as shown above. We must write the variable in the for loop in {{ }} brackets
+# Мы можем получить свойства нашего объекта в цикле for с точкой, как показано выше. Мы должны записать переменную в цикле for в скобках {{ }}
+# for sikldagi obyektimiz xususiyatlarini nuqta bilan olishimiz mumkin yuqorida ko'rsatilganidek. for siklidagi o'zgaruvchini {{ }} qavs ichida yozishimiz shart
