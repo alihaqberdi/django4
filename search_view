@@ -1,0 +1,73 @@
+# djangoda qidiruv qismini yozamiz
+# we write the search part in django
+# пишем поисковую часть на django
+
+
+# model.py
+
+from django.db import models
+
+
+class Category(model.Model):
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.name
+
+# end model.py
+
+# form.html
+
+  <form action="{% url 'search' %}" method="POST">{% csrf_token %} # url serach pathdagi pattern name
+      <input type="text" placeholder="Search" required name='texting'>
+      <button class="btn btn-green" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+  </form>
+  
+# end form.html
+
+
+# view.py
+
+from django.shortcuts import render
+from .models import Category
+
+def SerachView(request):
+    query = request.POST.get('texting') #form.html input name = 'texting'
+    list = Category.objects.filter(name__icontains=query)
+    context = {
+        'list': list
+    }
+    return render(request, 'result.html', context)
+    
+    
+# end view.py
+
+
+# urls.py 
+
+from django.urls import path
+from views import *
+urlpatterns = [
+  path('search/', SerachView, name='search')
+]
+
+# end urls.py 
+
+
+# result.html
+
+{% if list %}
+  {% for obj in list %}
+    <p>{{ obj.name }} </p>
+  {% endfor %}
+  
+{% else %}
+  <p> no result </p>
+  
+{% endif %}
+  
+# end result.html
+
+
+
